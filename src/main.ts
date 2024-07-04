@@ -35,31 +35,37 @@ const texture = textureLoader.load("/textures/particles/1.png");
  * Objects
  */
 const particleGeometry = new THREE.BufferGeometry();
-const width = 100;
-const height = 100;
+const width = 50;
+const height = 50;
 const count = width * height;
 const positions = new Float32Array(count * 3);
 
-let point = 1;
+let row = -width / 2;
+let column = -height / 2;
 
-positions.forEach((_, i) => {
-	if (point === 1) {
-		positions[i] = (Math.random() - 0.5) * 20;
-	} else if (point === 2) {
-		positions[i] = (Math.random() - 0.5) * 20;
-	} else if (point === 3) {
-		positions[i] = 0;
-		point = 0;
+for (let i = 0; i < count; i++) {
+	//x
+	positions[i * 3 + 0] = row * 0.4;
+
+	//y
+	positions[i * 3 + 1] = column * 0.4;
+
+	//z
+	positions[i * 3 + 2] = 0;
+
+	column++;
+
+	if (column === height / 2) {
+		row++;
+		column = -height / 2;
 	}
-
-	point++;
-});
+}
 
 const particleAttribute = new THREE.BufferAttribute(positions, 3);
 particleGeometry.setAttribute("position", particleAttribute);
 
 const particleMaterial = new THREE.PointsMaterial();
-particleMaterial.size = 0.5;
+particleMaterial.size = 1;
 particleMaterial.sizeAttenuation = true;
 particleMaterial.alphaMap = texture;
 particleMaterial.transparent = true;
@@ -71,6 +77,9 @@ particleMaterial.depthWrite = false;
 const particles = new THREE.Points(particleGeometry, particleMaterial);
 
 scene.add(particles);
+
+const controls = new OrbitControls(camera, canvas!);
+controls.enableDamping = true;
 
 renderer.setSize(sizes.width, sizes.height);
 renderer.render(scene, camera);
@@ -113,7 +122,7 @@ const tick = () => {
 	const elapsedTime = timer.getElapsed();
 
 	// Update controls
-	// controls.update();
+	controls.update();
 
 	// Render
 	renderer.render(scene, camera);

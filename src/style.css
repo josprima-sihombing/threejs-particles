@@ -1,0 +1,10 @@
+body {
+  margin: 0;
+  padding: 0;
+}
+
+canvas#three {
+  position: fixed;
+  left: 0;
+  top: 0;
+}
